@@ -1,0 +1,39 @@
+# Operating system and editor files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Logs and runtime state
+*.log
+logs/
+tmp/
+temp/
+
+# Dependencies and build outputs
+node_modules/
+dist/
+build/
+coverage/
+.pytest_cache/
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Generated local artifacts
+*.sqlite
+*.sqlite3
+*.db
