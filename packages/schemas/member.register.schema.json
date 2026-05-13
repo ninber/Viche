@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://viche.local/schemas/member.register.schema.json",
+  "title": "RegisterMemberRequest",
+  "type": "object",
+  "required": ["display_locale", "consents"],
+  "properties": {
+    "display_locale": {
+      "type": "string",
+      "examples": ["uk-UA", "en-US"]
+    },
+    "consents": {
+      "type": "object",
+      "required": ["privacy_notice_version", "terms_version"],
+      "properties": {
+        "privacy_notice_version": { "type": "string" },
+        "terms_version": { "type": "string" },
+        "public_profile_opt_in": { "type": "boolean", "default": false }
+      },
+      "additionalProperties": false
+    },
+    "anonymity_preference": {
+      "type": "string",
+      "enum": ["named", "pseudonymous", "private_by_default"],
+      "default": "private_by_default"
+    }
+  },
+  "additionalProperties": false
+}
+

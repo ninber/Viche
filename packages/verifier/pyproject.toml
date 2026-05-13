@@ -1,0 +1,10 @@
+[project]
+name = "viche-verifier"
+version = "0.1.0"
+description = "Verifier CLI skeleton for Viche journal exports"
+requires-python = ">=3.12"
+dependencies = []
+
+[project.scripts]
+viche-verify = "viche_verifier.cli:main"
+

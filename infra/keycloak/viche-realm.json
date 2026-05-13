@@ -1,0 +1,29 @@
+{
+  "realm": "viche",
+  "enabled": true,
+  "displayName": "Viche",
+  "registrationAllowed": true,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "clients": [
+    {
+      "clientId": "viche-web",
+      "name": "Viche Web",
+      "enabled": true,
+      "publicClient": true,
+      "protocol": "openid-connect",
+      "redirectUris": ["http://localhost:3000/*"],
+      "webOrigins": ["http://localhost:3000"],
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false
+    }
+  ],
+  "roles": {
+    "realm": [
+      { "name": "member", "description": "Verified or registered Viche member" },
+      { "name": "operator", "description": "Secretariat/operator role" },
+      { "name": "moderator", "description": "Proposal moderation role" }
+    ]
+  }
+}
+

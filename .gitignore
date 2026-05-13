@@ -27,6 +27,7 @@ node_modules/
 dist/
 build/
 coverage/
+*.tsbuildinfo
 .pytest_cache/
 __pycache__/
 *.py[cod]

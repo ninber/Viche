@@ -29,6 +29,31 @@ Some root documents have language counterparts:
 
 When documents differ, treat the Ukrainian version as authoritative unless a file explicitly says otherwise.
 
+## Development Skeleton
+
+The initial project skeleton follows `Plan_1.md`:
+
+- `apps/web` - Next.js public portal/member/operator UI shell.
+- `services/api` - FastAPI backend shell with `/v1/health`.
+- `packages/schemas` - shared JSON Schema contracts.
+- `packages/policy` - initial OPA policy bundle.
+- `packages/verifier` - journal verifier CLI skeleton.
+- `infra/compose` - local PostgreSQL, Redis, MinIO, Keycloak, API, and web stack.
+
+Start the local stack:
+
+```bash
+docker compose up --build
+```
+
+Useful local URLs:
+
+- Web: `http://localhost:3000`
+- API health: `http://localhost:8000/v1/health`
+- API docs: `http://localhost:8000/docs`
+- Keycloak: `http://localhost:8080`
+- MinIO console: `http://localhost:9001`
+
 ## License
 
 This project is licensed under the GNU Affero General Public License v3.0 only.

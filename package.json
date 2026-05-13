@@ -1,0 +1,21 @@
+{
+  "name": "viche",
+  "private": true,
+  "version": "0.1.0",
+  "license": "AGPL-3.0-only",
+  "engines": {
+    "node": ">=22"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "overrides": {
+    "postcss": "^8.5.14"
+  },
+  "scripts": {
+    "dev:web": "npm --workspace apps/web run dev",
+    "lint:web": "npm --workspace apps/web run lint",
+    "test": "npm --workspaces --if-present test"
+  }
+}
