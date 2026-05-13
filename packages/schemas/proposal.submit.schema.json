@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://viche.local/schemas/proposal.submit.schema.json",
+  "title": "SubmitProposalRequest",
+  "type": "object",
+  "required": ["arena_id", "title", "body_markdown", "jurisdiction"],
+  "properties": {
+    "arena_id": { "type": "string", "format": "uuid" },
+    "title": { "type": "string", "minLength": 10, "maxLength": 240 },
+    "body_markdown": { "type": "string", "minLength": 50 },
+    "jurisdiction": {
+      "type": "object",
+      "required": ["country_code"],
+      "properties": {
+        "country_code": { "type": "string", "examples": ["UA"] },
+        "region_code": { "type": "string" },
+        "district_code": { "type": "string" },
+        "community_code": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" },
+      "maxItems": 20
+    }
+  },
+  "additionalProperties": false
+}
+

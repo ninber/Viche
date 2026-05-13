@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://viche.local/schemas/federation.artifact-envelope.schema.json",
+  "title": "FederationArtifactEnvelope",
+  "type": "object",
+  "required": [
+    "protocol_version",
+    "artifact_type",
+    "artifact_id",
+    "origin_node_id",
+    "origin_journal_entry_id",
+    "origin_created_at",
+    "exported_at",
+    "export_reason",
+    "source_language",
+    "canonical_payload_hash",
+    "redaction_profile",
+    "signature"
+  ],
+  "properties": {
+    "protocol_version": { "type": "string", "const": "viche-federation-0.1" },
+    "artifact_type": {
+      "type": "string",
+      "enum": [
+        "proposal",
+        "evidence_bundle",
+        "panel_resolution",
+        "correspondence_status",
+        "transparency_checkpoint"
+      ]
+    },
+    "artifact_id": { "type": "string" },
+    "origin_node_id": { "type": "string" },
+    "origin_journal_entry_id": { "type": "string" },
+    "origin_checkpoint_id": { "type": ["string", "null"] },
+    "origin_created_at": { "type": "string", "format": "date-time" },
+    "exported_at": { "type": "string", "format": "date-time" },
+    "export_reason": { "type": "string" },
+    "source_language": { "type": "string", "default": "uk-UA" },
+    "canonical_payload_hash": { "type": "string" },
+    "redaction_profile": { "type": "string", "default": "public" },
+    "signature": {
+      "type": "object",
+      "required": ["key_id", "algorithm", "value"],
+      "properties": {
+        "key_id": { "type": "string" },
+        "algorithm": { "type": "string", "const": "ed25519" },
+        "value": { "type": "string" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
+

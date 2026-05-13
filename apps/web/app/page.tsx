@@ -1,16 +1,15 @@
-import { getHealth } from "@/lib/api";
-
-const workstreams = [
-  "Membership and identity separation",
-  "Proposal graph and moderation",
-  "Reproducible sortition",
-  "Mandates and panel lifecycle",
-  "Resolutions and official follow-up",
-  "Tamper-evident journal"
-];
+import { getFederationNode, getHealth, getSystemOverview } from "@/lib/api";
 
 export default async function Home() {
-  const health = await getHealth();
+  const [health, system, federationNode] = await Promise.all([
+    getHealth(),
+    getSystemOverview(),
+    getFederationNode()
+  ]);
+
+  const modules = system?.modules ?? [];
+  const planOneModules = modules.filter((module) => module.layer !== "federation");
+  const federationModules = modules.filter((module) => module.layer === "federation");
 
   return (
     <main className="min-h-screen">
@@ -31,21 +30,76 @@ export default async function Home() {
             </div>
           </div>
           <p className="max-w-3xl text-lg leading-8 text-neutral-700">
-            Skeleton workspace for the Viche public portal, member cabinet, operator console,
-            backend API, policy rules, and journal verifier.
+            Skeleton workspace for the Viche civic operating system: public portal, member
+            cabinet, operator console, backend API, policy rules, journal verifier, and
+            hierarchical federation layer.
           </p>
         </div>
       </section>
 
-      <section className="mx-auto grid max-w-6xl gap-4 px-6 py-8 md:grid-cols-2 lg:grid-cols-3">
-        {workstreams.map((item) => (
-          <div key={item} className="border border-line bg-white p-5">
-            <h2 className="text-base font-semibold">{item}</h2>
-            <p className="mt-3 text-sm leading-6 text-neutral-600">
-              Planned implementation track from Plan_1.md.
+      <section className="mx-auto max-w-6xl px-6 py-8">
+        <div className="mb-4 flex items-end justify-between gap-4">
+          <div>
+            <h2 className="text-2xl font-semibold">Plan 1 Core Skeleton</h2>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-neutral-600">
+              Local civic workflow modules exposed by the API as typed skeleton contracts.
             </p>
           </div>
-        ))}
+          <span className="border border-line bg-white px-3 py-2 text-sm">
+            {system?.canonical_language ?? "uk-UA"}
+          </span>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {planOneModules.map((module) => (
+            <div key={module.key} className="border border-line bg-white p-5">
+              <div className="flex items-start justify-between gap-3">
+                <h3 className="text-base font-semibold">{module.name}</h3>
+                <span className="bg-paper px-2 py-1 text-xs">{module.status}</span>
+              </div>
+              <p className="mt-3 text-sm leading-6 text-neutral-600">{module.purpose}</p>
+              <p className="mt-4 text-xs text-neutral-500">{module.plan_reference}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="border-t border-line bg-white">
+        <div className="mx-auto max-w-6xl px-6 py-8">
+          <h2 className="text-2xl font-semibold">Plan 2 Federation Skeleton</h2>
+          <p className="mt-2 max-w-3xl text-sm leading-6 text-neutral-600">
+            Node discovery and bidirectional artifact flow are represented as API contracts for
+            future town, regional, national, peer, partner, and mirror interoperability.
+          </p>
+          <div className="mt-6 grid gap-4 md:grid-cols-2">
+            <div className="border border-line bg-paper p-5">
+              <h3 className="text-base font-semibold">Local Node</h3>
+              <dl className="mt-4 space-y-2 text-sm">
+                <div className="flex justify-between gap-4">
+                  <dt className="text-neutral-600">ID</dt>
+                  <dd>{federationNode?.node_id ?? "unreachable"}</dd>
+                </div>
+                <div className="flex justify-between gap-4">
+                  <dt className="text-neutral-600">Scope</dt>
+                  <dd>{federationNode?.scope ?? "unknown"}</dd>
+                </div>
+                <div className="flex justify-between gap-4">
+                  <dt className="text-neutral-600">Protocol</dt>
+                  <dd>{federationNode?.protocol_versions.join(", ") ?? "none"}</dd>
+                </div>
+              </dl>
+            </div>
+            {federationModules.map((module) => (
+              <div key={module.key} className="border border-line bg-paper p-5">
+                <div className="flex items-start justify-between gap-3">
+                  <h3 className="text-base font-semibold">{module.name}</h3>
+                  <span className="bg-white px-2 py-1 text-xs">{module.status}</span>
+                </div>
+                <p className="mt-3 text-sm leading-6 text-neutral-600">{module.purpose}</p>
+                <p className="mt-4 text-xs text-neutral-500">{module.plan_reference}</p>
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
     </main>
   );

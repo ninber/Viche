@@ -16,3 +16,12 @@ allow if {
   input.action == "proposal.submit"
 }
 
+allow if {
+  input.subject.role == "operator"
+  input.action == "federation.artifact.triage"
+}
+
+allow if {
+  input.subject.role == "operator"
+  input.action == "federation.relationship.manage"
+}
