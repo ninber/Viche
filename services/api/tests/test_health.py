@@ -9,7 +9,11 @@ def test_openapi_contains_health_route() -> None:
     response = client.get("/openapi.json")
 
     assert response.status_code == 200
-    assert "/v1/health" in response.json()["paths"]
+    paths = response.json()["paths"]
+    assert "/v1/health" in paths
+    assert "/v1/members/register" in paths
+    assert "/v1/proposals" in paths
+    assert "/v1/public/proposals" in paths
 
 
 def test_system_overview_exposes_plan_modules() -> None:
@@ -20,12 +24,16 @@ def test_system_overview_exposes_plan_modules() -> None:
     assert response.status_code == 200
     payload = response.json()
     assert payload["canonical_language"] == "uk-UA"
-    assert {module["key"] for module in payload["modules"]} >= {
+    modules = {module["key"]: module for module in payload["modules"]}
+    assert set(modules) >= {
         "membership",
         "journal",
         "proposals",
         "federation",
     }
+    assert modules["membership"]["status"] == "pilot"
+    assert modules["journal"]["status"] == "pilot"
+    assert modules["proposals"]["status"] == "pilot"
 
 
 def test_federation_node_metadata() -> None:

@@ -3,8 +3,9 @@
   "$id": "https://viche.local/schemas/proposal.submit.schema.json",
   "title": "SubmitProposalRequest",
   "type": "object",
-  "required": ["arena_id", "title", "body_markdown", "jurisdiction"],
+  "required": ["submitter_member_id", "arena_id", "title", "body_markdown", "jurisdiction"],
   "properties": {
+    "submitter_member_id": { "type": "string", "format": "uuid" },
     "arena_id": { "type": "string", "format": "uuid" },
     "title": { "type": "string", "minLength": 10, "maxLength": 240 },
     "body_markdown": { "type": "string", "minLength": 50 },
@@ -27,4 +28,3 @@
   },
   "additionalProperties": false
 }
-

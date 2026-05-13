@@ -1,4 +1,5 @@
 import { getFederationNode, getHealth, getSystemOverview } from "@/lib/api";
+import { CivicActions } from "@/components/civic-actions";
 
 export default async function Home() {
   const [health, system, federationNode] = await Promise.all([
@@ -101,7 +102,8 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      <CivicActions />
     </main>
   );
 }
-

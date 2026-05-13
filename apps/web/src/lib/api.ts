@@ -35,8 +35,46 @@ const federationNodeSchema = z.object({
   transparency_log_url: z.string().nullable()
 });
 
+const publicIdentitySchema = z.object({
+  id: z.string(),
+  handle: z.string(),
+  display_name: z.string().nullable()
+});
+
+const memberSchema = z.object({
+  id: z.string(),
+  display_locale: z.string(),
+  assurance_level: z.string(),
+  status: z.string(),
+  public_identity: publicIdentitySchema,
+  created_at: z.string()
+});
+
+const proposalSchema = z.object({
+  id: z.string(),
+  submitter_member_id: z.string(),
+  arena_id: z.string(),
+  title: z.string(),
+  body_markdown: z.string(),
+  country_code: z.string(),
+  region_code: z.string().nullable(),
+  district_code: z.string().nullable(),
+  community_code: z.string().nullable(),
+  status: z.string(),
+  tags: z.array(z.string()),
+  created_at: z.string()
+});
+
+const publicProposalCollectionSchema = z.object({
+  resource: z.literal("proposals"),
+  status: z.literal("live"),
+  items: z.array(proposalSchema)
+});
+
 export type SystemOverview = z.infer<typeof systemOverviewSchema>;
 export type FederationNode = z.infer<typeof federationNodeSchema>;
+export type Member = z.infer<typeof memberSchema>;
+export type Proposal = z.infer<typeof proposalSchema>;
 
 async function getJson<T>(path: string, schema: z.ZodSchema<T>): Promise<T | null> {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
@@ -62,4 +100,13 @@ export async function getSystemOverview(): Promise<SystemOverview | null> {
 
 export async function getFederationNode(): Promise<FederationNode | null> {
   return getJson("/v1/federation/node", federationNodeSchema);
+}
+
+export async function getPublicProposals(): Promise<Proposal[]> {
+  const collection = await getJson("/v1/public/proposals", publicProposalCollectionSchema);
+  return collection?.items ?? [];
+}
+
+export function getBrowserApiBaseUrl(): string {
+  return process.env.NEXT_PUBLIC_BROWSER_API_URL ?? "http://localhost:8000";
 }

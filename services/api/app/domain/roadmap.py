@@ -44,7 +44,7 @@ PLAN_1_MODULES: list[SystemModule] = [
         key="membership",
         name="Membership and identity separation",
         layer="trust",
-        status="skeleton",
+        status="pilot",
         purpose="Stable members, assurance levels, consent records, and public-safe identities.",
         plan_reference="Plan_1.md Phase 1",
     ),
@@ -52,7 +52,7 @@ PLAN_1_MODULES: list[SystemModule] = [
         key="journal",
         name="Tamper-evident journal",
         layer="trust",
-        status="skeleton",
+        status="pilot",
         purpose="Hash-chained civic event log, checkpoints, and verifier exports.",
         plan_reference="Plan_1.md Phase 2",
     ),
@@ -60,7 +60,7 @@ PLAN_1_MODULES: list[SystemModule] = [
         key="proposals",
         name="Issue and proposal graph",
         layer="civic",
-        status="skeleton",
+        status="pilot",
         purpose="Proposal intake, moderation, evidence, duplicates, alternatives, and relations.",
         plan_reference="Plan_1.md Phase 3",
     ),
@@ -181,4 +181,3 @@ FEDERATION_ARTIFACT_TYPES: list[FederationArtifactType] = [
         contains_private_data_by_default=False,
     ),
 ]
-
