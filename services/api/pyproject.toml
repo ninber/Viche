@@ -1,3 +1,7 @@
+[build-system]
+requires = ["setuptools>=75.0"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "viche-api"
 version = "0.1.0"
@@ -25,10 +29,13 @@ dev = [
 testpaths = ["tests"]
 asyncio_mode = "auto"
 
+[tool.setuptools.packages.find]
+include = ["app*"]
+exclude = ["migrations*"]
+
 [tool.ruff]
 line-length = 100
 target-version = "py312"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
-
