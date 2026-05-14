@@ -68,7 +68,7 @@ PLAN_1_MODULES: list[SystemModule] = [
         key="sortition",
         name="Sortition and mandates",
         layer="trust",
-        status="skeleton",
+        status="pilot",
         purpose="Eligible pool snapshots, reproducible draws, invitations, mandates, and COI.",
         plan_reference="Plan_1.md Phase 4",
     ),

@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://viche.local/schemas/sortition.run.schema.json",
+  "title": "RunSortitionRequest",
+  "type": "object",
+  "required": ["pool_id", "target_seats"],
+  "properties": {
+    "pool_id": { "type": "string", "format": "uuid" },
+    "target_seats": { "type": "integer", "minimum": 1 },
+    "reserve_seats": { "type": "integer", "minimum": 0, "default": 0 },
+    "seed": { "type": ["string", "null"], "maxLength": 160 }
+  },
+  "additionalProperties": false
+}
+

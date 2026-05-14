@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://viche.local/schemas/proposal.relation.schema.json",
+  "title": "CreateProposalRelationRequest",
+  "type": "object",
+  "required": ["target_proposal_id", "relation_type"],
+  "properties": {
+    "target_proposal_id": { "type": "string", "format": "uuid" },
+    "relation_type": {
+      "type": "string",
+      "enum": [
+        "duplicate_of",
+        "near_duplicate_of",
+        "alternative_to",
+        "supports",
+        "conflicts_with",
+        "depends_on",
+        "supersedes",
+        "evidence_for",
+        "evidence_against",
+        "remote_duplicate_of",
+        "remote_alternative_to"
+      ]
+    },
+    "rationale": { "type": ["string", "null"], "maxLength": 1000 }
+  },
+  "additionalProperties": false
+}
+

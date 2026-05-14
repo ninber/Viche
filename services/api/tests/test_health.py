@@ -13,6 +13,8 @@ def test_openapi_contains_health_route() -> None:
     assert "/v1/health" in paths
     assert "/v1/members/register" in paths
     assert "/v1/proposals" in paths
+    assert "/v1/eligibility-pools" in paths
+    assert "/v1/sortitions" in paths
     assert "/v1/public/proposals" in paths
 
 
@@ -34,6 +36,7 @@ def test_system_overview_exposes_plan_modules() -> None:
     assert modules["membership"]["status"] == "pilot"
     assert modules["journal"]["status"] == "pilot"
     assert modules["proposals"]["status"] == "pilot"
+    assert modules["sortition"]["status"] == "pilot"
 
 
 def test_federation_node_metadata() -> None:

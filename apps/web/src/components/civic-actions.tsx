@@ -16,6 +16,35 @@ type SubmitProposalResponse = {
   journal_entry_hash: string;
 };
 
+type EligibilityPoolResponse = {
+  id: string;
+  arena_id: string;
+  name: string;
+  status: string;
+  pool_hash: string;
+  member_count: number;
+};
+
+type CreateEligibilityPoolResponse = {
+  pool: EligibilityPoolResponse;
+  journal_entry_hash: string;
+};
+
+type SortitionRunResponse = {
+  id: string;
+  pool_id: string;
+  status: string;
+  target_seats: number;
+  reserve_seats: number;
+  transcript_hash: string;
+  results: Array<{ member_id: string; rank: number; seat_type: string }>;
+};
+
+type RunSortitionResponse = {
+  run: SortitionRunResponse;
+  journal_entry_hash: string;
+};
+
 async function postJson<T>(path: string, body: unknown): Promise<T> {
   const response = await fetch(`${getBrowserApiBaseUrl()}${path}`, {
     method: "POST",
@@ -35,6 +64,8 @@ export function CivicActions() {
   const [member, setMember] = useState<Member | null>(null);
   const [proposal, setProposal] = useState<Proposal | null>(null);
   const [journalHash, setJournalHash] = useState<string | null>(null);
+  const [pool, setPool] = useState<EligibilityPoolResponse | null>(null);
+  const [sortition, setSortition] = useState<SortitionRunResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isBusy, setIsBusy] = useState(false);
 
@@ -99,6 +130,30 @@ export function CivicActions() {
       setJournalHash(result.journal_entry_hash);
     } catch (requestError) {
       setError(requestError instanceof Error ? requestError.message : "Unknown proposal error");
+    } finally {
+      setIsBusy(false);
+    }
+  }
+
+  async function createPoolAndRunSortition() {
+    setIsBusy(true);
+    setError(null);
+    try {
+      const poolResult = await postJson<CreateEligibilityPoolResponse>("/v1/eligibility-pools", {
+        arena_id: "00000000-0000-4000-8000-000000000001",
+        name: "Local pilot eligible pool"
+      });
+      setPool(poolResult.pool);
+      const sortitionResult = await postJson<RunSortitionResponse>("/v1/sortitions", {
+        pool_id: poolResult.pool.id,
+        target_seats: 1,
+        reserve_seats: 0,
+        seed: "local-pilot-seed"
+      });
+      setSortition(sortitionResult.run);
+      setJournalHash(sortitionResult.journal_entry_hash);
+    } catch (requestError) {
+      setError(requestError instanceof Error ? requestError.message : "Unknown sortition error");
     } finally {
       setIsBusy(false);
     }
@@ -182,6 +237,31 @@ export function CivicActions() {
         </form>
 
         <div className="lg:col-span-2">
+          <div className="border border-line bg-white p-5">
+            <h2 className="text-2xl font-semibold">Freeze Pool and Run Sortition</h2>
+            <p className="mt-2 text-sm leading-6 text-neutral-600">
+              Uses active pilot members, freezes a pool hash, and runs a deterministic pilot draw.
+            </p>
+            <button
+              className="mt-5 border border-civic bg-civic px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+              disabled={isBusy}
+              onClick={createPoolAndRunSortition}
+              type="button"
+            >
+              Create Pool and Draw
+            </button>
+            {pool ? (
+              <p className="mt-4 text-sm text-neutral-700">
+                Pool {pool.id}: {pool.member_count} members, {pool.pool_hash}
+              </p>
+            ) : null}
+            {sortition ? (
+              <p className="mt-2 text-sm text-neutral-700">
+                Sortition {sortition.id}: {sortition.results.length} selected,{" "}
+                {sortition.transcript_hash}
+              </p>
+            ) : null}
+          </div>
           {journalHash ? <p className="text-sm text-neutral-700">Last journal hash: {journalHash}</p> : null}
           {error ? <p className="mt-2 text-sm text-red-700">{error}</p> : null}
         </div>
