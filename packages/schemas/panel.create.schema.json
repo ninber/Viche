@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.viche.local/panel.create.schema.json",
+  "title": "Create Panel Request",
+  "type": "object",
+  "required": ["proposal_id", "sortition_run_id", "title", "mandate_summary"],
+  "properties": {
+    "proposal_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sortition_run_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "title": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 240
+    },
+    "mandate_summary": {
+      "type": "string",
+      "minLength": 20,
+      "maxLength": 2000
+    }
+  },
+  "additionalProperties": false
+}

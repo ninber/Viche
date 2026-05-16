@@ -45,6 +45,32 @@ type RunSortitionResponse = {
   journal_entry_hash: string;
 };
 
+type PanelResponse = {
+  id: string;
+  proposal_id: string;
+  sortition_run_id: string;
+  title: string;
+  status: string;
+  mandates: Array<{ id: string; member_id: string; status: string }>;
+};
+
+type CreatePanelResponse = {
+  panel: PanelResponse;
+  journal_entry_hash: string;
+};
+
+type ResolutionResponse = {
+  id: string;
+  panel_id: string;
+  title: string;
+  status: string;
+};
+
+type CreateResolutionResponse = {
+  resolution: ResolutionResponse;
+  journal_entry_hash: string;
+};
+
 async function postJson<T>(path: string, body: unknown): Promise<T> {
   const response = await fetch(`${getBrowserApiBaseUrl()}${path}`, {
     method: "POST",
@@ -66,6 +92,8 @@ export function CivicActions() {
   const [journalHash, setJournalHash] = useState<string | null>(null);
   const [pool, setPool] = useState<EligibilityPoolResponse | null>(null);
   const [sortition, setSortition] = useState<SortitionRunResponse | null>(null);
+  const [panel, setPanel] = useState<PanelResponse | null>(null);
+  const [resolution, setResolution] = useState<ResolutionResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isBusy, setIsBusy] = useState(false);
 
@@ -154,6 +182,42 @@ export function CivicActions() {
       setJournalHash(sortitionResult.journal_entry_hash);
     } catch (requestError) {
       setError(requestError instanceof Error ? requestError.message : "Unknown sortition error");
+    } finally {
+      setIsBusy(false);
+    }
+  }
+
+  async function createPanelAndResolution() {
+    if (!proposal || !sortition) {
+      setError("Submit a proposal and run sortition first.");
+      return;
+    }
+
+    setIsBusy(true);
+    setError(null);
+    try {
+      const panelResult = await postJson<CreatePanelResponse>("/v1/panels", {
+        proposal_id: proposal.id,
+        sortition_run_id: sortition.id,
+        title: `Pilot panel for ${proposal.title}`,
+        mandate_summary:
+          "Pilot mandate to deliberate the submitted proposal, review public evidence, and publish a transparent resolution."
+      });
+      setPanel(panelResult.panel);
+      const resolutionResult = await postJson<CreateResolutionResponse>(
+        `/v1/panels/${panelResult.panel.id}/resolutions`,
+        {
+          title: `Resolution: ${proposal.title}`,
+          body_markdown:
+            "The pilot panel records this initial resolution as a transparent test artifact for the civic workflow. Production voting, minority notes, redaction, and correspondence dispatch remain future implementation steps.",
+          status: "published",
+          decision_method: "pilot_consensus"
+        }
+      );
+      setResolution(resolutionResult.resolution);
+      setJournalHash(resolutionResult.journal_entry_hash);
+    } catch (requestError) {
+      setError(requestError instanceof Error ? requestError.message : "Unknown panel error");
     } finally {
       setIsBusy(false);
     }
@@ -259,6 +323,31 @@ export function CivicActions() {
               <p className="mt-2 text-sm text-neutral-700">
                 Sortition {sortition.id}: {sortition.results.length} selected,{" "}
                 {sortition.transcript_hash}
+              </p>
+            ) : null}
+          </div>
+          <div className="mt-4 border border-line bg-white p-5">
+            <h2 className="text-2xl font-semibold">Create Panel and Resolution</h2>
+            <p className="mt-2 text-sm leading-6 text-neutral-600">
+              Converts the primary sortition result into active panel mandates and publishes a
+              pilot resolution.
+            </p>
+            <button
+              className="mt-5 border border-civic bg-civic px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+              disabled={isBusy || !proposal || !sortition}
+              onClick={createPanelAndResolution}
+              type="button"
+            >
+              Create Panel
+            </button>
+            {panel ? (
+              <p className="mt-4 text-sm text-neutral-700">
+                Panel {panel.id}: {panel.mandates.length} mandates, {panel.status}
+              </p>
+            ) : null}
+            {resolution ? (
+              <p className="mt-2 text-sm text-neutral-700">
+                Resolution {resolution.id}: {resolution.status}
               </p>
             ) : null}
           </div>

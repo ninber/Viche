@@ -71,10 +71,29 @@ const publicProposalCollectionSchema = z.object({
   items: z.array(proposalSchema)
 });
 
+const resolutionSchema = z.object({
+  id: z.string(),
+  panel_id: z.string(),
+  proposal_id: z.string(),
+  title: z.string(),
+  body_markdown: z.string(),
+  status: z.string(),
+  decision_method: z.string(),
+  published_at: z.string().nullable(),
+  created_at: z.string()
+});
+
+const publicResolutionCollectionSchema = z.object({
+  resource: z.literal("resolutions"),
+  status: z.literal("live"),
+  items: z.array(resolutionSchema)
+});
+
 export type SystemOverview = z.infer<typeof systemOverviewSchema>;
 export type FederationNode = z.infer<typeof federationNodeSchema>;
 export type Member = z.infer<typeof memberSchema>;
 export type Proposal = z.infer<typeof proposalSchema>;
+export type Resolution = z.infer<typeof resolutionSchema>;
 
 async function getJson<T>(path: string, schema: z.ZodSchema<T>): Promise<T | null> {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
@@ -104,6 +123,11 @@ export async function getFederationNode(): Promise<FederationNode | null> {
 
 export async function getPublicProposals(): Promise<Proposal[]> {
   const collection = await getJson("/v1/public/proposals", publicProposalCollectionSchema);
+  return collection?.items ?? [];
+}
+
+export async function getPublicResolutions(): Promise<Resolution[]> {
+  const collection = await getJson("/v1/public/resolutions", publicResolutionCollectionSchema);
   return collection?.items ?? [];
 }
 

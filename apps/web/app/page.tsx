@@ -1,12 +1,19 @@
-import { getFederationNode, getHealth, getPublicProposals, getSystemOverview } from "@/lib/api";
+import {
+  getFederationNode,
+  getHealth,
+  getPublicProposals,
+  getPublicResolutions,
+  getSystemOverview
+} from "@/lib/api";
 import { CivicActions } from "@/components/civic-actions";
 
 export default async function Home() {
-  const [health, system, federationNode, proposals] = await Promise.all([
+  const [health, system, federationNode, proposals, resolutions] = await Promise.all([
     getHealth(),
     getSystemOverview(),
     getFederationNode(),
-    getPublicProposals()
+    getPublicProposals(),
+    getPublicResolutions()
   ]);
 
   const modules = system?.modules ?? [];
@@ -131,6 +138,38 @@ export default async function Home() {
                   {proposal.country_code}
                   {proposal.region_code ? ` / ${proposal.region_code}` : ""}
                   {proposal.community_code ? ` / ${proposal.community_code}` : ""}
+                </p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="border-t border-line bg-paper">
+        <div className="mx-auto max-w-6xl px-6 py-8">
+          <div className="mb-4 flex items-end justify-between gap-4">
+            <div>
+              <h2 className="text-2xl font-semibold">Published Resolutions</h2>
+              <p className="mt-2 text-sm leading-6 text-neutral-600">
+                Panel resolutions are public artifacts linked to proposals and journal entries.
+              </p>
+            </div>
+            <span className="border border-line bg-white px-3 py-2 text-sm">
+              {resolutions.length} published
+            </span>
+          </div>
+          <div className="grid gap-4 md:grid-cols-2">
+            {resolutions.slice(0, 4).map((resolution) => (
+              <article key={resolution.id} className="border border-line bg-white p-5">
+                <div className="flex items-start justify-between gap-3">
+                  <h3 className="text-base font-semibold">{resolution.title}</h3>
+                  <span className="bg-paper px-2 py-1 text-xs">{resolution.status}</span>
+                </div>
+                <p className="mt-3 line-clamp-3 text-sm leading-6 text-neutral-700">
+                  {resolution.body_markdown}
+                </p>
+                <p className="mt-4 text-xs text-neutral-500">
+                  {resolution.decision_method} / panel {resolution.panel_id}
                 </p>
               </article>
             ))}

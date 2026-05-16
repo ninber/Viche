@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.routes.federation import router as federation_router
 from app.api.routes.health import router as health_router
 from app.api.routes.members import router as members_router
+from app.api.routes.panels import router as panels_router
 from app.api.routes.proposals import router as proposals_router
 from app.api.routes.public import router as public_router
 from app.api.routes.sortition import router as sortition_router
@@ -31,6 +32,7 @@ def create_app() -> FastAPI:
     app.include_router(members_router, prefix="/v1", tags=["members"])
     app.include_router(proposals_router, prefix="/v1", tags=["proposals"])
     app.include_router(sortition_router, prefix="/v1", tags=["sortition"])
+    app.include_router(panels_router, prefix="/v1", tags=["panels"])
     app.include_router(public_router, prefix="/v1", tags=["public"])
     app.include_router(federation_router, prefix="/v1", tags=["federation"])
     return app

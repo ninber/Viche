@@ -76,15 +76,18 @@ PLAN_1_MODULES: list[SystemModule] = [
         key="panels",
         name="Panels and deliberation",
         layer="civic",
-        status="skeleton",
-        purpose="Panel lifecycle, agendas, evidence packs, sessions, and transcripts.",
+        status="pilot",
+        purpose=(
+            "Panel lifecycle, mandates, agenda scope, evidence packs, sessions, "
+            "and transcripts."
+        ),
         plan_reference="Plan_1.md Phase 5",
     ),
     SystemModule(
         key="resolutions",
         name="Resolutions and votes",
         layer="civic",
-        status="skeleton",
+        status="pilot",
         purpose="Draft resolutions, votes, minority notes, publication, and redaction.",
         plan_reference="Plan_1.md Phase 5",
     ),

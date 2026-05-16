@@ -157,6 +157,7 @@ class SortitionRun(TimestampMixin, Base):
 
     pool: Mapped[EligibilityPool] = relationship(back_populates="sortition_runs")
     results: Mapped[list["SortitionResult"]] = relationship(back_populates="run")
+    panel: Mapped["Panel"] = relationship(back_populates="sortition_run")
 
 
 class SortitionResult(Base):
@@ -174,3 +175,65 @@ class SortitionResult(Base):
     selection_hash: Mapped[str] = mapped_column(String(71), nullable=False)
 
     run: Mapped[SortitionRun] = relationship(back_populates="results")
+
+
+class Panel(TimestampMixin, Base):
+    __tablename__ = "panels"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_uuid)
+    proposal_id: Mapped[str] = mapped_column(ForeignKey("proposals.id"), nullable=False)
+    sortition_run_id: Mapped[str] = mapped_column(
+        ForeignKey("sortition_runs.id"),
+        nullable=False,
+        unique=True,
+    )
+    arena_id: Mapped[str] = mapped_column(String(36), nullable=False)
+    title: Mapped[str] = mapped_column(String(240), nullable=False)
+    mandate_summary: Mapped[str] = mapped_column(Text, nullable=False)
+    status: Mapped[str] = mapped_column(String(32), nullable=False, default="active")
+
+    proposal: Mapped[Proposal] = relationship()
+    sortition_run: Mapped[SortitionRun] = relationship(back_populates="panel")
+    mandates: Mapped[list["PanelMandate"]] = relationship(back_populates="panel")
+    resolutions: Mapped[list["Resolution"]] = relationship(back_populates="panel")
+
+
+class PanelMandate(TimestampMixin, Base):
+    __tablename__ = "panel_mandates"
+    __table_args__ = (
+        UniqueConstraint("panel_id", "member_id", name="uq_panel_mandate_member"),
+    )
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_uuid)
+    panel_id: Mapped[str] = mapped_column(ForeignKey("panels.id"), nullable=False)
+    member_id: Mapped[str] = mapped_column(ForeignKey("members.id"), nullable=False)
+    sortition_result_id: Mapped[str] = mapped_column(
+        ForeignKey("sortition_results.id"),
+        nullable=False,
+    )
+    role: Mapped[str] = mapped_column(String(32), nullable=False, default="member")
+    status: Mapped[str] = mapped_column(String(32), nullable=False, default="active")
+    starts_at: Mapped[DateTime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    ends_at: Mapped[DateTime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+    panel: Mapped[Panel] = relationship(back_populates="mandates")
+
+
+class Resolution(TimestampMixin, Base):
+    __tablename__ = "resolutions"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_uuid)
+    panel_id: Mapped[str] = mapped_column(ForeignKey("panels.id"), nullable=False)
+    proposal_id: Mapped[str] = mapped_column(ForeignKey("proposals.id"), nullable=False)
+    title: Mapped[str] = mapped_column(String(240), nullable=False)
+    body_markdown: Mapped[str] = mapped_column(Text, nullable=False)
+    status: Mapped[str] = mapped_column(String(32), nullable=False, default="published")
+    decision_method: Mapped[str] = mapped_column(
+        String(80),
+        nullable=False,
+        default="pilot_consensus",
+    )
+    published_at: Mapped[DateTime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+
+    panel: Mapped[Panel] = relationship(back_populates="resolutions")
+    proposal: Mapped[Proposal] = relationship()

@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.viche.local/resolution.publish.schema.json",
+  "title": "Create Resolution Request",
+  "type": "object",
+  "required": ["title", "body_markdown"],
+  "properties": {
+    "title": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 240
+    },
+    "body_markdown": {
+      "type": "string",
+      "minLength": 50
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "published"],
+      "default": "published"
+    },
+    "decision_method": {
+      "type": "string",
+      "maxLength": 80,
+      "default": "pilot_consensus"
+    }
+  },
+  "additionalProperties": false
+}
